@@ -29,17 +29,23 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install Dependencies
+      - name: Ensure Main Entry File Exists
+        run: |
+          if [ ! -f main.py ]; then
+            cp mobile_app.py main.py
+          fi
+
+      - name: Install Build Tools & Flet
         run: |
           python -m pip install --upgrade pip
           pip install flet requests
 
-      - name: Build APK
+      - name: Build APK with Flet
         run: |
-          flet build apk --project "VisionPass" mobile_app.py
+          flet build apk --project-name "visionpass" --org "com.visionpass.app"
 
-      - name: Upload APK Artifact
+      - name: Locate and Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
+          name: VisionPass-APK
           path: build/apk/*.apk
